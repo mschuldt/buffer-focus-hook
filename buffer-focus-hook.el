@@ -18,7 +18,7 @@
   (with-current-buffer (or buffer (current-buffer))
     (add-hook 'buffer-focus-in-hook callback nil t)))
 
-(defun buffer-remove-focus (buffer)
+(defun buffer-focus-remove (buffer)
   (with-current-buffer buffer
     (run-hooks 'buffer-focus-out-hook)
     (setq buffer-focus-current-buffer nil)))
