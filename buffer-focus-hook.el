@@ -24,18 +24,19 @@
     (setq buffer-focus-current-buffer nil)))
 
 (defun buffer-focus-updater ()
-  (when (eq (window-buffer (selected-window))
-	    (current-buffer))
+  (when (not (buffer-live-p buffer-focus-current-buffer))
+    (setq buffer-focus-current-buffer nil))
+  (when (and (eq (window-buffer (selected-window))
+                 (current-buffer))
+             (not (eq buffer-focus-current-buffer
+                      (current-buffer))))
     ;; selected window has current buffer
-    (when (and buffer-focus-current-buffer
-	       (not (eq buffer-focus-current-buffer
-			(current-buffer))))
+    (when buffer-focus-current-buffer
       ;; current buffer lost focus
-      (buffer-remove-focus buffer-focus-current-buffer))
-    (when (and (or buffer-focus-in-hook
-		   buffer-focus-out-hook)
-	       (not (eq buffer-focus-current-buffer
-			(current-buffer))))
+      (buffer-focus-remove buffer-focus-current-buffer))
+
+    (when (or buffer-focus-in-hook
+              buffer-focus-out-hook)
       ;; current buffer gaining focus
       (setq buffer-focus-current-buffer (current-buffer))
       (when buffer-focus-in-hook
