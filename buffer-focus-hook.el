@@ -3,7 +3,7 @@
 (defvar buffer-focus-current-buffer nil)
 
 (defvar buffer-focus-in-hook nil
-  "Normal hook run run when a buffers window gains focus")
+  "Normal hook run when a buffers window gains focus")
 
 (defvar buffer-focus-out-hook nil
   "Normal hook run when a buffers window looses focus")
