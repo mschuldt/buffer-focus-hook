@@ -57,12 +57,6 @@
   (with-current-buffer (or buffer (current-buffer))
     (add-hook 'buffer-focus-hook--in callback nil t)))
 
-(defun buffer-focus-hook--remove-focus (buffer)
-  "Remove focus from BUFFER."
-  (with-current-buffer buffer
-    (run-hooks 'buffer-focus-hook--out)
-    (setq buffer-focus-hook--current-buffer nil)))
-
 (defun buffer-focus-hook--updater ()
   "Main buffer focus hook update function added for ‘buffer-list-update-hook’."
   (when (not (buffer-live-p buffer-focus-hook--current-buffer))
@@ -74,14 +68,15 @@
     ;; selected window has current buffer
     (when buffer-focus-hook--current-buffer
       ;; current buffer lost focus
-      buffer-focus-hook--remove-focus buffer-focus-hook--current-buffer))
+      (with-current-buffer buffer-focus-hook--current-buffer
+        (run-hooks 'buffer-focus-hook--out)
+        (setq buffer-focus-hook--current-buffer nil)))
 
     (when (or buffer-focus-hook--in
               buffer-focus-hook--out)
       ;; current buffer gaining focus
       (setq buffer-focus-hook--current-buffer (current-buffer))
-      (when buffer-focus-hook--in
-        (run-hooks 'buffer-focus-hook--in)))))
+      (run-hooks 'buffer-focus-hook--in))))
 
 (add-hook 'buffer-list-update-hook 'buffer-focus-hook--updater)
 
